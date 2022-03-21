@@ -37,12 +37,12 @@ final class CardOnFileDashboardInteractor: PresentableInteractor<CardOnFileDashb
    
     private let dependency: CardOnFileDashboardInteractorDependency
     
-    private var cancellable: Set<AnyCancellable>
+    private var cancellables: Set<AnyCancellable>
     
     init(presenter: CardOnFileDashboardPresentable,
-                  dependency: CardOnFileDashboardInteractorDependency) {
+         dependency: CardOnFileDashboardInteractorDependency) {
         self.dependency = dependency
-        self.cancellable = .init()
+        self.cancellables = .init()
         super.init(presenter: presenter)
         presenter.listener = self
     }
@@ -54,13 +54,14 @@ final class CardOnFileDashboardInteractor: PresentableInteractor<CardOnFileDashb
         dependency.cardsOnfFileRepository.cardOnFile.sink { methods in
             let viewModels = methods.prefix(5).map(PaymentMethodViewModel.init)
             self.presenter.update(with: viewModels)
-        }.store(in: &cancellable)
+        }.store(in: &cancellables)
     }
 
     override func willResignActive() {
         super.willResignActive()
         
-        cancellable.forEach { $0.cancel() }
-        cancellable.removeAll()
+        // sink 클로져안에서 [weak self]를 해주지 않아서 쓰는 코드
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
 }

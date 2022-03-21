@@ -96,7 +96,6 @@ final class CardOnFileDashboardViewController: UIViewController, CardOnFileDashb
     headerStackView.addArrangedSubview(titleLabel)
     headerStackView.addArrangedSubview(seeAllButton)
     
-    
     NSLayoutConstraint.activate([
       headerStackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
       headerStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
