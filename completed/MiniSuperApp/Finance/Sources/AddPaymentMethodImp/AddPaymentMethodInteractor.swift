@@ -23,7 +23,7 @@ final class AddPaymentMethodInteractor: PresentableInteractor<AddPaymentMethodPr
   
   private let dependency: AddPaymentMethodInteractorDependency
   
-  private var cancellables: Set<AnyCancellable>
+  private var cancellables:  Set<AnyCancellable>
   
   init(
     presenter: AddPaymentMethodPresentable,

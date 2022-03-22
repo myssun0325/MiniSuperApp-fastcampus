@@ -5,8 +5,8 @@ protocol FinanceHomeDependency: Dependency {
   // created by this RIB.
 }
 
-final class FinanceHomeComponent: Component<FinanceHomeDependency>, SuperPayDashboardDependency, CardOnFileDashboardDependency {
-  let cardsOnfFileRepository: CardOnFileRepository
+final class FinanceHomeComponent: Component<FinanceHomeDependency>, SuperPayDashboardDependency, CardOnFileDashboardDependency, AddPaymentMethodDependency {
+  let cardOnFileRepository: CardOnFileRepository
   var balance: ReadOnlyCurrentValuePublisher<Double> { balancePublisher }
   
   private let balancePublisher: CurrentValuePublisher<Double>
@@ -14,10 +14,10 @@ final class FinanceHomeComponent: Component<FinanceHomeDependency>, SuperPayDash
   init(
     dependency: FinanceHomeDependency,
     balance: CurrentValuePublisher<Double>,
-    cardsOnFileRepository: CardOnFileRepository
+    cardOnFileRepository: CardOnFileRepository
   ) {
     self.balancePublisher = balance
-    self.cardsOnfFileRepository = cardsOnFileRepository
+    self.cardOnFileRepository = cardOnFileRepository
     super.init(dependency: dependency)
   }
 }
@@ -40,7 +40,7 @@ final class FinanceHomeBuilder: Builder<FinanceHomeDependency>, FinanceHomeBuild
     let component = FinanceHomeComponent(
       dependency: dependency,
       balance: balancePublisher,
-      cardsOnFileRepository: CardOnFileRepositoryImp()
+      cardOnFileRepository: CardOnFileRepositoryImp()
     )
     
     let viewController = FinanceHomeViewController()
@@ -49,11 +49,13 @@ final class FinanceHomeBuilder: Builder<FinanceHomeDependency>, FinanceHomeBuild
     
     let superPayDashboardBuilder = SuperPayDashboardBuilder(dependency: component)
     let cardOnFileDashboardBuilder = CardOnFileDashboardBuilder(dependency: component)
+    let addPaymentMethodBuilder = AddPaymentMethodBuilder(dependency: component)
     
     return FinanceHomeRouter(interactor: interactor,
                              viewController: viewController,
                              superPayDashboardBuildable: superPayDashboardBuilder,
-                             cardOnFileDashboardBuildable: cardOnFileDashboardBuilder
+                             cardOnFileDashboardBuildable: cardOnFileDashboardBuilder,
+                             addPaymentMethodBuildable: addPaymentMethodBuilder
     )
   }
 }

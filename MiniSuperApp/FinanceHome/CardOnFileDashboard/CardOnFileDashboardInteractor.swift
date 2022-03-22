@@ -20,11 +20,11 @@ protocol CardOnFileDashboardPresentable: Presentable {
 }
 
 protocol CardOnFileDashboardListener: AnyObject {
-    // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
+    func cardOnFileDashboardDidTapAddPaymentMethod()
 }
 
 protocol CardOnFileDashboardInteractorDependency {
-    var cardsOnfFileRepository: CardOnFileRepository { get }
+    var cardOnFileRepository: CardOnFileRepository { get }
 }
 
 final class CardOnFileDashboardInteractor: PresentableInteractor<CardOnFileDashboardPresentable>, CardOnFileDashboardInteractable, CardOnFileDashboardPresentableListener {
@@ -51,8 +51,8 @@ final class CardOnFileDashboardInteractor: PresentableInteractor<CardOnFileDashb
         super.didBecomeActive()
         // TODO: Implement business logic here.
         
-        dependency.cardsOnfFileRepository.cardOnFile.sink { methods in
-            let viewModels = methods.prefix(5).map(PaymentMethodViewModel.init)
+        dependency.cardOnFileRepository.cardOnFile.sink { methods in
+            let viewModels = methods.prefix(3).map(PaymentMethodViewModel.init)
             self.presenter.update(with: viewModels)
         }.store(in: &cancellables)
     }
@@ -63,5 +63,10 @@ final class CardOnFileDashboardInteractor: PresentableInteractor<CardOnFileDashb
         // sink 클로져안에서 [weak self]를 해주지 않아서 쓰는 코드
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
+    }
+    
+    func didTapAddPaymentMethod() {
+        // 강사: CardOnFileDashboard는 화면에 극히 일부분만 담당하기 때문에 홈화면 전체를 담당하는 FinanceHome에서 띄우는게 합리적
+        listener?.cardOnFileDashboardDidTapAddPaymentMethod()
     }
 }
